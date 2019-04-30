@@ -1,3 +1,6 @@
 [submodule "3rdparty/libQGLViewer"]
 	path = 3rdparty/libQGLViewer
 	url = https://github.com/GillesDebunne/libQGLViewer
+[submodule "3rdparty/meshoptimizer"]
+	path = 3rdparty/meshoptimizer
+	url = https://github.com/zeux/meshoptimizer.git
