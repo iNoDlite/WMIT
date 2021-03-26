@@ -34,6 +34,8 @@
 #include "Vector.h"
 #include "Mesh.h"
 
+#include <meshoptimizer.h>
+
 typedef std::tuple<WZMVertex, WZMUV, WZMVertex> WZMPoint;
 
 // Scale animation numbers from int to float
@@ -1074,6 +1076,56 @@ void Mesh::flipNormals()
 		else
 			m_tangentArray[i].w() = 1.0f;
 	}
+}
+
+void Mesh::optimize()
+{
+	// Indexing
+
+	meshopt_Stream streams[] = {
+		{&m_vertexArray[0], sizeof(GLfloat) * 3, sizeof(GLfloat) * 3},
+		{&m_normalArray[0], sizeof(GLfloat) * 3, sizeof(GLfloat) * 3},
+		{&m_textureArray[0], sizeof(GLclampf) * 2, sizeof(GLclampf) * 2},
+	};
+
+	size_t old_vertex_count = m_vertexArray.size();
+	size_t index_count = m_indexArray.size() * 3;
+	std::vector<unsigned int> remap(index_count);
+	size_t vertex_count = meshopt_generateVertexRemapMulti(&remap[0], &m_indexArray[0][0],
+			index_count, old_vertex_count, streams, sizeof(streams) / sizeof(streams[0]));
+
+	{
+		std::vector<IndexedTri> indexArray;
+		indexArray.resize(index_count);
+		meshopt_remapIndexBuffer(&indexArray[0][0], &m_indexArray[0][0], index_count, &remap[0]);
+		m_indexArray.swap(indexArray);
+	}
+
+	{
+		std::vector<WZMVertex> vertexArray;
+		vertexArray.resize(vertex_count);
+		meshopt_remapVertexBuffer(&vertexArray[0], &m_vertexArray[0], index_count, sizeof(WZMVertex), &remap[0]);
+		m_vertexArray.swap(vertexArray);
+	}
+
+	{
+		std::vector<WZMVertex> normalArray;
+		normalArray.resize(vertex_count);
+		meshopt_remapVertexBuffer(&normalArray[0], &m_normalArray[0], index_count, sizeof(WZMVertex), &remap[0]);
+		m_normalArray.swap(normalArray);
+	}
+
+	{
+		std::vector<WZMUV> textureArray;
+		textureArray.resize(vertex_count);
+		meshopt_remapVertexBuffer(&textureArray[0], &m_textureArray[0], index_count, sizeof(WZMUV), &remap[0]);
+		m_textureArray.swap(textureArray);
+	}
+
+	// FIXME: add TB parts, should follow normals logic I think
+
+	// Vertex cache optimization
+	meshopt_optimizeVertexCache(&m_indexArray[0][0], &m_indexArray[0][0], index_count, vertex_count);
 }
 
 void Mesh::move(const WZMVertex &moveby)

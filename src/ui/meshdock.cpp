@@ -14,6 +14,7 @@ MeshDock::MeshDock(QWidget *parent) :
 	connect(m_ui->meshComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(selectMesh(int)));
 	connect(m_ui->btnAddConnector, SIGNAL(clicked(bool)), this, SLOT(addConnector()));
 	connect(m_ui->btnDeleteConnector, SIGNAL(clicked(bool)), this, SLOT(rmSelConnector()));
+	connect(m_ui->pbOptimize, SIGNAL(clicked(bool)), this, SLOT(optimizeGeometry()));
 }
 
 MeshDock::~MeshDock()
@@ -74,6 +75,7 @@ void MeshDock::selectMesh(int index)
 {
 	m_selected_mesh = index;
 	resetConnectorViewModel();
+	m_ui->gbGeometry->setEnabled(m_selected_mesh >= 0);
 }
 
 void MeshDock::rmSelConnector()
@@ -90,6 +92,13 @@ void MeshDock::rmSelConnector()
 void MeshDock::addConnector()
 {
 	m_ui->meshConnectors->model()->insertRow(m_ui->meshConnectors->model()->rowCount());
+}
+
+void MeshDock::optimizeGeometry()
+{
+	if ((m_selected_mesh < 0) || !m_model || (m_model->meshes() == 0))
+		return;
+	m_model->getMesh(m_selected_mesh).optimize();
 }
 
 WzmConnectorsModel::WzmConnectorsModel(Mesh &mesh, QObject *parent):

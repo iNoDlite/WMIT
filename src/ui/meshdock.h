@@ -31,6 +31,7 @@ private slots:
 	void selectMesh(int index);
 	void rmSelConnector();
 	void addConnector();
+	void optimizeGeometry();
 
 private:
 	WZM* m_model;

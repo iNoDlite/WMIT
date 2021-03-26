@@ -26,9 +26,9 @@
 #include "Vector.h"
 
 
-struct IndexedTri : public Vector<GLushort,3>
+struct IndexedTri : public Vector<GLuint,3>
 {
-	typedef GLushort indexType;
+	typedef GLuint indexType;
 	indexType& a() {
 		return component[0];
 	}

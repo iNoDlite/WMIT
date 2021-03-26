@@ -199,8 +199,8 @@ void QWZM::render(const float* mtxModelView, const float* mtxProj, const float* 
 		static_assert(sizeof(WZMVertex) == sizeof(GLfloat)*3, "WZMVertex has become fat.");
 		glVertexPointer(3, GL_FLOAT, 0, &msh.m_vertexArray[0]);
 
-		static_assert(sizeof(IndexedTri) == sizeof(GLushort)*3, "IndexedTri has become fat.");
-		glDrawElements(GL_TRIANGLES, static_cast<int>(msh.m_indexArray.size()) * 3, GL_UNSIGNED_SHORT, &msh.m_indexArray[0]);
+		static_assert(sizeof(IndexedTri) == sizeof(GLuint)*3, "IndexedTri has become fat.");
+		glDrawElements(GL_TRIANGLES, static_cast<int>(msh.m_indexArray.size()) * 3, GL_UNSIGNED_INT, &msh.m_indexArray[0]);
 
 		if (!isFixedPipelineRenderer())
 		{

@@ -56,6 +56,22 @@
      </widget>
     </item>
     <item>
+     <widget class="QGroupBox" name="gbGeometry">
+      <property name="title">
+       <string>Geometry</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QPushButton" name="pbOptimize">
+         <property name="text">
+          <string>Optimize</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
      <spacer name="verticalSpacer">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
